@@ -5,7 +5,7 @@ import {
   editToList,
   changeStatus,
   deleteItem,
-} from "../redux/features/todolist/TodolistSlice";
+} from "../redux/features/counter/TodolistSlice";
 
 const Todo = (props) => {
   const [toggleUpdate, setToggleUpdate] = useState(false);

@@ -1,51 +1,40 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Todo from "./Todo";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const TodoList = () => {
   const state = useSelector((state) => state.actionSlice);
-  let result = [];
+  const [result, setResult] = useState([]);
 
-  const switchfunc = () => {
+  useEffect(() => {
     switch (state.status) {
       case "completed":
-        result = state.todos.filter((item) => item.completed === true);
-        return result;
+        setResult(state.todos.filter((item) => item.completed === true));
+        break;
 
       case "uncompleted": {
-        result = state.todos.filter((item) => item.completed === false);
-        return result;
+        setResult(state.todos.filter((item) => item.completed === false));
+        break;
       }
 
       default:
-        return state.todos;
+        setResult(state.todos);
     }
-  };
-  useEffect(() => {
-    result = switchfunc();
-  }, [state.status]);
+  }, [state]);
 
   return (
     <div>
       <div className="todo-container">
         <ul className="todo-list">
-          {
-            //result.length<=0 && result=state.todos ;
-
-            result.length > 0
-              ? result.map((item) => {
-                  console.log(result);
-                  return (
-                    <Todo title={item.title} key={result.id} todo={item} />
-                  );
-                })
-              : state.todos.map((item) => {
-                  console.log(state.todos);
-                  return (
-                    <Todo title={item.title} key={state.todos.id} todo={item} />
-                  );
-                })
-          }
+          {result.length > 0
+            ? result.map((item) => {
+                return <Todo title={item.title} key={result.id} todo={item} />;
+              })
+            : state.todos.map((item) => {
+                return (
+                  <Todo title={item.title} key={state.todos.id} todo={item} />
+                );
+              })}
         </ul>
       </div>
     </div>

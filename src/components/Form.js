@@ -4,7 +4,7 @@ import React from "react";
 import {
   addToList,
   filterToList,
-} from "../redux/features/todolist/TodolistSlice";
+} from "../redux/features/counter/TodolistSlice";
 
 const Form = () => {
   const state = useSelector((state) => state);
