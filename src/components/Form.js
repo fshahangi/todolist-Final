@@ -1,32 +1,42 @@
-import React, { useContext } from "react";
-import { stateContext } from "../context/TodoContext";
+import { useSelector, useDispatch } from "react-redux";
+import { useRef } from "react";
+import React from "react";
+import {
+  addToList,
+  filterToList,
+} from "../redux/features/todolist/TodolistSlice";
 
 const Form = () => {
-  const [state, setState] = useContext(stateContext);
+  const state = useSelector((state) => state);
+  const dispatch = useDispatch();
+  const inputRef = useRef();
 
-  const inputtextHandler = (e) => {
-    setState((preVal) => ({ ...preVal, inputText: e.target.value }));
-  };
   const submitTodoHandler = (e) => {
     e.preventDefault();
-    setState((preVal) => ({
-      ...preVal,
-      todos: [
-        ...state.todos,
-        { title: state.inputText, completed: false, id: Math.random() * 1000 },
-      ],
-    }));
-    setState((preVal) => ({ ...preVal, inputText: "" }));
+    dispatch(
+      addToList({
+        title: inputRef.current.value,
+        completed: false,
+        id: Math.random() * 1000,
+      })
+    );
+    inputRef.current.value = "";
   };
   const statusHandler = (e) => {
-    setState((preVal) => ({ ...preVal, status: e.target.value }));
+    dispatch(
+      filterToList({
+        status: e.target.value,
+      })
+    );
+
+    //setState((preVal) => ({ ...preVal, status: e.target.value }));
   };
   return (
     <div>
       <form>
         <input
+          ref={inputRef}
           value={state.inputText}
-          onChange={inputtextHandler}
           type="text"
           className="todo-input"
         />

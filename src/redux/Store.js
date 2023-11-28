@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import actionReducer from "./features/counter/CounterSlice";
+import TodolistSlice from "./features/todolist/TodolistSlice";
 
-export const store = configureStore({
+export default configureStore({
   reducer: {
-    actionlist: actionReducer,
+    actionSlice: TodolistSlice,
   },
 });

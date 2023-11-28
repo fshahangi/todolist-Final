@@ -1,75 +1,48 @@
-import React, { useContext, useState } from "react";
-import { stateContext } from "../context/TodoContext";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useRef } from "react";
+import {
+  editToList,
+  changeStatus,
+  deleteItem,
+} from "../redux/features/todolist/TodolistSlice";
 
 const Todo = (props) => {
-  const [state, setState] = useContext(stateContext);
-
   const [toggleUpdate, setToggleUpdate] = useState(false);
-  const [name, setName] = useState(props.todo.title);
-  //const actionList = useSelector((state) => state.actionlist);
+  const { todos } = useSelector((state) => state.actionSlice);
+  const dispatch = useDispatch();
+  const inputRef = useRef();
 
   const editHandler = () => {
     setToggleUpdate(!toggleUpdate);
-
-    setState((preVal) => ({
-      ...preVal,
-      todos: state.todos.map((item) => {
-        if (item.id === props.todo.id) {
-          return {
-            ...item,
-            title: name,
-          };
-        }
-        return item;
-      }),
-    }));
+    dispatch(editToList({ id: props.key, title: inputRef.current.value }));
   };
 
   const deletehandler = () => {
-    setState((preVal) => ({
-      ...preVal,
-      todos: state.todos.filter((item) => item.id !== props.todo.id),
-    }));
+    dispatch(deleteItem({ id: props.todo.id }));
   };
 
   const completeHandler = () => {
-    setState((preVal) => ({
-      ...preVal,
-      todos: state.todos.map((item) => {
-        if (item.id === props.todo.id) {
-          return {
-            ...item,
-            completed: !item.completed,
-          };
-        }
-        return item;
-      }),
-    }));
+    dispatch(
+      changeStatus({ id: props.todo.id, completed: props.todo.completed })
+    );
   };
-
   return (
     <div className="todo">
-      {toggleUpdate && !props.todo.completed ? (
-        <li>
+      <li className={`todo-item ${props.todo.completed ? "completed" : ""}`}>
+        {!todos.completed && (
           <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            ref={inputRef}
             placeholder={props.title}
             type="text"
             className="updateinput"
+            disabled={!toggleUpdate}
           />
-        </li>
-      ) : (
-        <li className={`todo-item ${props.todo.completed ? "completed" : ""}`}>
-          {props.title}
-        </li>
-      )}
+        )}
+      </li>
 
       <button
-        className={
-          toggleUpdate && !props.todo.completed ? "update-btn" : "edit-btn"
-        }
+        className={toggleUpdate && !todos.completed ? "update-btn" : "edit-btn"}
         onClick={editHandler}
       >
         <i className="fas fa-edit"></i>
